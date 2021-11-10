@@ -7,13 +7,14 @@ public class playercontrol : MonoBehaviour
 {
     public Rigidbody2D rb;
     public float speed;
-    public float jumpforce;
+    public float JumpForce;
     public Animator animi;
     public LayerMask ground;
     public Collider2D coll;
     public int Cheery = 0;
     public Text CheeryNum;
     private bool isHurt;
+    public AudioSource jumpAudio,hurtAudio,cheeryAudio;//Ã¯‘æ, ‹…À,”£Ã““Ù∆µ
 
     // Start is called before the first frame update
     void Start()
@@ -36,14 +37,14 @@ public class playercontrol : MonoBehaviour
 
     void Movement()
     {
-        float horizontalmove = Input.GetAxis("Horizontal");
+        float horizontalMove = Input.GetAxis("Horizontal");
         float facedirection = Input.GetAxisRaw("Horizontal");
 
 
         //Ω«…´“∆∂Ø
-        if (horizontalmove != 0)
+        if (horizontalMove != 0)
         {
-            rb.velocity = new Vector2(horizontalmove * speed * Time.deltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(horizontalMove * speed * Time.deltaTime, rb.velocity.y);
             animi.SetFloat("running", Mathf.Abs(facedirection));
 
         }
@@ -55,8 +56,9 @@ public class playercontrol : MonoBehaviour
         //Ω«…´Ã¯‘æ
         if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
+            rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.deltaTime);
             animi.SetBool("jumping", true);
+            jumpAudio.Play();
         }
 
     }
@@ -101,6 +103,7 @@ public class playercontrol : MonoBehaviour
     {
         if (collision.tag == "Collection")//≥‘Cheery
         {
+            cheeryAudio.Play();
             Destroy(collision.gameObject);
             Cheery += 1;
             CheeryNum.text = Cheery.ToString();
@@ -117,18 +120,20 @@ public class playercontrol : MonoBehaviour
                 //Destroy(collision.gameObject);
                 enemy.JumpOn();
                 
-                rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
+                rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.deltaTime);
                 animi.SetBool("jumping", true);
             }
             else if(transform.position.x<collision.transform.position.x)
             {
                 rb.velocity = new Vector2(-10, rb.velocity.y);
                 isHurt = true;
+                hurtAudio.Play();
             }
             else if (transform.position.x > collision.transform.position.x)
             {
                 rb.velocity = new Vector2(10, rb.velocity.y);
                 isHurt = true;
+                hurtAudio.Play();
             }
         }
     }
