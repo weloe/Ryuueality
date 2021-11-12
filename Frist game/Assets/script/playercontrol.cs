@@ -11,10 +11,15 @@ public class playercontrol : MonoBehaviour
     public Animator animi;
     public LayerMask ground;
     public Collider2D coll;
+
+    public Collider2D DisColl;
+    public Transform CellingCheck;
+
     public int Cheery = 0;
     public Text CheeryNum;
     private bool isHurt;
     public AudioSource jumpAudio,hurtAudio,cheeryAudio;//跳跃,受伤,樱桃音频
+    
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +49,7 @@ public class playercontrol : MonoBehaviour
         //角色移动
         if (horizontalMove != 0)
         {
-            rb.velocity = new Vector2(horizontalMove * speed * Time.deltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(horizontalMove * speed * Time.fixedDeltaTime, rb.velocity.y);
             animi.SetFloat("running", Mathf.Abs(facedirection));
 
         }
@@ -56,11 +61,12 @@ public class playercontrol : MonoBehaviour
         //角色跳跃
         if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
         {
-            rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.deltaTime);
+            rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.fixedDeltaTime);
             animi.SetBool("jumping", true);
             jumpAudio.Play();
         }
 
+        Crouch();
     }
 
     void SwitchAnim()//动画转换
@@ -97,6 +103,7 @@ public class playercontrol : MonoBehaviour
 
         }
 
+        
     }
     //收集物品
     private void OnTriggerEnter2D(Collider2D collision)//若另一个配置器2D进入了触发器，则调用onTriggerEnter2D
@@ -135,6 +142,23 @@ public class playercontrol : MonoBehaviour
                 isHurt = true;
                 hurtAudio.Play();
             }
+        }
+    }
+
+    void Crouch()
+    {
+        if (!Physics2D.OverlapCircle(CellingCheck.position,0.2f,ground)) 
+        {
+            if (Input.GetButtonDown("Crouch"))
+            {
+                animi.SetBool("crouching", true);
+                DisColl.enabled = false;
+            }
+            else if (Input.GetButtonUp("Crouch"))
+            {
+                animi.SetBool("crouching", false);
+                DisColl.enabled = true;
+            } 
         }
     }
 }
