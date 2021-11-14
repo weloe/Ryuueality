@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class playercontrol : MonoBehaviour
 {
@@ -105,15 +107,24 @@ public class playercontrol : MonoBehaviour
 
         
     }
-    //收集物品
+    //碰撞检测
     private void OnTriggerEnter2D(Collider2D collision)//若另一个配置器2D进入了触发器，则调用onTriggerEnter2D
     {
+        //收集物品
         if (collision.tag == "Collection")//吃Cheery
         {
             cheeryAudio.Play();
             Destroy(collision.gameObject);
             Cheery += 1;
             CheeryNum.text = Cheery.ToString();
+        }
+
+        //
+        if(collision.tag == "DeadLine")
+        {
+
+            GetComponent<AudioSource>().enabled = false;
+            Invoke("Restart", 2f);
         }
     }
     //消灭敌人
@@ -149,17 +160,22 @@ public class playercontrol : MonoBehaviour
     {
         if (!Physics2D.OverlapCircle(CellingCheck.position,0.2f,ground)) 
         {
-            if (Input.GetButtonDown("Crouch"))
+            if (Input.GetButton("Crouch")) //GetButtonDown
             {
                 animi.SetBool("crouching", true);
                 DisColl.enabled = false;
             }
-            else if (Input.GetButtonUp("Crouch"))
+            else //else if (Input.GetButtonUp("Crouch"))
             {
                 animi.SetBool("crouching", false);
                 DisColl.enabled = true;
             } 
         }
+    }
+
+    void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
 
