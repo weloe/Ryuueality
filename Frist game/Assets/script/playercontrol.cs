@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using System;
 
 public class playercontrol : MonoBehaviour
 {
     public Rigidbody2D rb;
+
+
+
     public float speed;
     public float JumpForce;
     public Animator animi;
@@ -42,6 +45,14 @@ public class playercontrol : MonoBehaviour
         SwitchAnim();
     }
 
+    private void Update()
+    {
+        Jump();
+        Crouch();
+        CheeryNum.text = Cheery.ToString();
+
+    }
+
     void Movement()
     {
         float horizontalMove = Input.GetAxis("Horizontal");
@@ -61,14 +72,14 @@ public class playercontrol : MonoBehaviour
             transform.localScale = new Vector3(facedirection, 1, 1);
         }
         //角色跳跃
-        if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
-        {
-            rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.fixedDeltaTime);
-            animi.SetBool("jumping", true);
-            jumpAudio.Play();
-        }
+        //if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
+        //{
+        //    rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.fixedDeltaTime);
+        //    animi.SetBool("jumping", true);
+        //    jumpAudio.Play();
+        //}
 
-        Crouch();
+        
     }
 
     void SwitchAnim()//动画转换
@@ -111,15 +122,16 @@ public class playercontrol : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)//若另一个配置器2D进入了触发器，则调用onTriggerEnter2D
     {
         //收集物品
-        if (collision.tag == "Collection")//吃Cheery
+        if (collision.tag == "Collection")
         {
             cheeryAudio.Play();
-            Destroy(collision.gameObject);
-            Cheery += 1;
-            CheeryNum.text = Cheery.ToString();
+            //Destroy(collision.gameObject);
+            //Cheery += 1;
+            collision.GetComponent<Animator>().Play("isGot");
+            //CheeryNum.text = Cheery.ToString();
         }
 
-        //
+        //死亡重置
         if(collision.tag == "DeadLine")
         {
 
@@ -172,10 +184,28 @@ public class playercontrol : MonoBehaviour
             } 
         }
     }
+    //角色跳跃
+    void Jump()
+    {
+        
+        if (Input.GetButton("Jump") && coll.IsTouchingLayers(ground))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.deltaTime);
+            animi.SetBool("jumping", true);
+            jumpAudio.Play();
+        }
+    }
 
     void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    // public 要在另一个代码中调用CheeryCount()
+    public void CheeryCount()
+    {
+        Cheery += 1;
+    }
+
 }
 
