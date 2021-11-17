@@ -18,11 +18,13 @@ public class playercontrol : MonoBehaviour
     public Collider2D coll;
 
     public Collider2D DisColl;
-    public Transform CellingCheck;
+    public Transform CellingCheck,GroundCheck;
 
     public int Cheery = 0;
     public Text CheeryNum;
-    private bool isHurt;
+    private bool isHurt;//默认是false
+    private bool isGround;
+    private int extraJump;//默认值是0
     public AudioSource jumpAudio,hurtAudio,cheeryAudio;//跳跃,受伤,樱桃音频
     
 
@@ -43,11 +45,15 @@ public class playercontrol : MonoBehaviour
         }
 
         SwitchAnim();
+
+        //写在FixedUpdate中为了每帧检测多次
+        isGround = Physics2D.OverlapCircle(GroundCheck.position, 0.2f, ground);
     }
 
     private void Update()
     {
-        Jump();
+        //Jump();
+        newJump();
         Crouch();
         CheeryNum.text = Cheery.ToString();
 
@@ -185,7 +191,7 @@ public class playercontrol : MonoBehaviour
         }
     }
     //角色跳跃
-    void Jump()
+    /*void Jump()
     {
         
         if (Input.GetButton("Jump") && coll.IsTouchingLayers(ground))
@@ -194,8 +200,32 @@ public class playercontrol : MonoBehaviour
             animi.SetBool("jumping", true);
             jumpAudio.Play();
         }
+    }*/
+
+    void newJump()
+    {
+        if(isGround)
+        {
+            extraJump = 1;
+        }
+        if(Input.GetButtonDown("Jump") && extraJump>0)
+        {
+            rb.velocity = Vector2.up * JumpForce;//new Vector2(0,1)
+            extraJump--;
+            animi.SetBool("jumping", true);
+        }
+        if(Input.GetButtonDown("Jump") && extraJump==0 && isGround)
+        {
+            rb.velocity = Vector2.up * JumpForce;
+            animi.SetBool("jumping", true);
+        }
     }
 
+
+
+
+
+    //重置场景
     void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

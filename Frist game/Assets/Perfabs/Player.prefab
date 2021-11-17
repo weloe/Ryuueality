@@ -38,6 +38,7 @@ Transform:
   m_LocalScale: {x: 0.97986704, y: 0.9349609, z: 0}
   m_Children:
   - {fileID: 991192349177011563}
+  - {fileID: 6720374363754273472}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -177,6 +178,7 @@ MonoBehaviour:
   coll: {fileID: 906425445720384708}
   DisColl: {fileID: 906425445720384715}
   CellingCheck: {fileID: 991192349177011563}
+  GroundCheck: {fileID: 0}
   Cheery: 0
   CheeryNum: {fileID: 0}
   jumpAudio: {fileID: 1842843583}
@@ -614,4 +616,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 906425445720384713}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7943112067045032574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6720374363754273472}
+  m_Layer: 0
+  m_Name: groundcheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6720374363754273472
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7943112067045032574}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.076, y: -0.98, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 906425445720384713}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
