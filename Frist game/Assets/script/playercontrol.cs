@@ -10,22 +10,22 @@ public class playercontrol : MonoBehaviour
     public Rigidbody2D rb;
 
 
-
     public float speed;
     public float JumpForce;
     public Animator animi;
     public LayerMask ground;
     public Collider2D coll;
-
     public Collider2D DisColl;
     public Transform CellingCheck,GroundCheck;
-
     public int Cheery = 0;
     public Text CheeryNum;
+
     private bool isHurt;//默认是false
     private bool isGround;
+    private bool jumpPressed;
+    
     private int extraJump;//默认值是0
-    public AudioSource jumpAudio,hurtAudio,cheeryAudio;//跳跃,受伤,樱桃音频
+    public AudioSource jumpAudio,hurtAudio,cheeryAudio;//音频
     
 
     // Start is called before the first frame update
@@ -41,7 +41,7 @@ public class playercontrol : MonoBehaviour
         
         if(!isHurt)
         {
-            Movement();//函数调用
+            Movement();
         }
 
         SwitchAnim();
@@ -57,6 +57,11 @@ public class playercontrol : MonoBehaviour
         Crouch();
         CheeryNum.text = Cheery.ToString();
 
+        if (Input.GetButtonDown("Jump") && extraJump > 0)
+        {  
+            jumpPressed = true;
+        }
+
     }
 
     void Movement()
@@ -66,31 +71,26 @@ public class playercontrol : MonoBehaviour
 
 
         //角色移动
-        if (horizontalMove != 0)
-        {
+        //if (horizontalMove != 0)
+        //{
             rb.velocity = new Vector2(horizontalMove * speed * Time.fixedDeltaTime, rb.velocity.y);
             animi.SetFloat("running", Mathf.Abs(facedirection));
+        //}
 
-        }
+
+        
         //面向的方向
         if (facedirection != 0)
         {
             transform.localScale = new Vector3(facedirection, 1, 1);
         }
-        //角色跳跃
-        //if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
-        //{
-        //    rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.fixedDeltaTime);
-        //    animi.SetBool("jumping", true);
-        //    jumpAudio.Play();
-        //}
 
-        
+
     }
-
-    void SwitchAnim()//动画转换
+    //动画转换
+    void SwitchAnim()
     {
-        animi.SetBool("idle", false);
+        animi.SetBool("idle", false);//可去
 
         if(rb.velocity.y<0.1f && !coll.IsTouchingLayers(ground))
         {
@@ -111,7 +111,7 @@ public class playercontrol : MonoBehaviour
             if (Mathf.Abs(rb.velocity.x) < 0.1f)//x轴速度小于0.1
             {
                 animi.SetBool("hurt", false);
-                animi.SetBool("idle", true);
+                animi.SetBool("idle", true);//可去
                 isHurt = false;
             }
         }
@@ -145,6 +145,19 @@ public class playercontrol : MonoBehaviour
             Invoke("Restart", 2f);
         }
     }
+
+    // public 要在另一个代码中调用CheeryCount()
+    public void CheeryCount()
+    {
+        Cheery += 1;
+    }
+
+    //重置场景
+    void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     //消灭敌人
     private void OnCollisionEnter2D(Collision2D collision)//当碰撞效果发生时
     {
@@ -156,7 +169,7 @@ public class playercontrol : MonoBehaviour
                 //Destroy(collision.gameObject);
                 enemy.JumpOn();
                 
-                rb.velocity = new Vector2(rb.velocity.x, JumpForce * Time.deltaTime);
+                rb.velocity = new Vector2(rb.velocity.x, JumpForce);
                 animi.SetBool("jumping", true);
             }
             else if(transform.position.x<collision.transform.position.x)
@@ -206,18 +219,25 @@ public class playercontrol : MonoBehaviour
     {
         if(isGround)
         {
-            extraJump = 1;
+            extraJump = 2;
+            
         }
-        if(Input.GetButtonDown("Jump") && extraJump>0)
+        if(jumpPressed && isGround)
         {
+            
             rb.velocity = Vector2.up * JumpForce;//new Vector2(0,1)
             extraJump--;
+            jumpPressed = false;
             animi.SetBool("jumping", true);
+            jumpAudio.Play();
         }
-        if(Input.GetButtonDown("Jump") && extraJump==0 && isGround)
+        else if(jumpPressed && extraJump>0 && !isGround)
         {
             rb.velocity = Vector2.up * JumpForce;
+            extraJump--;
+            jumpPressed = false;
             animi.SetBool("jumping", true);
+            jumpAudio.Play();
         }
     }
 
@@ -225,17 +245,9 @@ public class playercontrol : MonoBehaviour
 
 
 
-    //重置场景
-    void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
 
-    // public 要在另一个代码中调用CheeryCount()
-    public void CheeryCount()
-    {
-        Cheery += 1;
-    }
+
+
 
 }
 

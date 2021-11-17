@@ -6597,6 +6597,10 @@ PrefabInstance:
       propertyPath: OutputAudioMixerGroup
       value: 
       objectReference: {fileID: 24300002, guid: f19ca670d78facd4c8b060ecd6b86d67, type: 2}
+    - target: {fileID: 906425445720384712, guid: 98babfc6e2f9983428cb92c567c88347, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 906425445720384713, guid: 98babfc6e2f9983428cb92c567c88347, type: 3}
       propertyPath: m_RootOrder
       value: 6

@@ -7,8 +7,8 @@ public class Enemy_Eagle : Enemy
     private Rigidbody2D rb;
     private Collider2D coll;//∂‡”‡
     public float Speed;
-    public Transform top, botton;
     private float Topy, Bottony;
+    public Transform top, botton;
     private bool isUp = true;
 
     // Start is called before the first frame update

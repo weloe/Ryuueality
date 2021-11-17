@@ -17,8 +17,8 @@ public class Enemy : MonoBehaviour
 
         GetComponent<Collider2D>().enabled = false;//禁用collider2D
 
-        //deathAudio.Play();加在这里后老鹰无法销毁，会留着个静态动画上下移动
         Destroy(gameObject);
+
     }
     public void JumpOn()
     {
