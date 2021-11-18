@@ -219,7 +219,7 @@ public class playercontrol : MonoBehaviour
     {
         if(isGround)
         {
-            extraJump = 2;
+            extraJump = 1;
             
         }
         if(jumpPressed && isGround)
