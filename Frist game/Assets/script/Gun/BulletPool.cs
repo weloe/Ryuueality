@@ -52,7 +52,7 @@ public class BulletPool : MonoBehaviour
         {
             FillPool();
         }
-        var outBullet = availableObjects.Dequeue();//从开头取出，并在池中清除
+        var outBullet = availableObjects.Dequeue();//从开头取出
 
         outBullet.SetActive(true);//接着会自动启用BulletSprite中的OnEnabled
 

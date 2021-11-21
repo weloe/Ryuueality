@@ -36,13 +36,13 @@ public class BulletSprite : MonoBehaviour
         coll = GetComponent<Collider2D>();
         Bullet_facedirection = GameObject.FindGameObjectWithTag("Player").transform.localScale.x;
 
-        //playerSprite = player.GetComponent<SpriteRenderer>();
+        
 
         alpha = alphaSet;
 
-        //thisSprite.sprite = playerSprite.sprite;
+        
         transform.position = player.position;
-        transform.localScale = player.localScale;//把角色的左右翻转值传到Shadow
+        transform.localScale = player.localScale;//把角色的左右翻转值传到
         transform.rotation = player.rotation;
 
         activeStart = Time.time;//开始显示时间为当前时间点
@@ -69,18 +69,18 @@ public class BulletSprite : MonoBehaviour
         }
         
     }
-    private void OnCollisionEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other != null)
-        {
-            if (other.gameObject.tag == "Enemy")
+        //if (collision != null)
+        //{
+            if (collision.gameObject.tag == "Enemy")
             {
-                Enemy enemy = other.gameObject.GetComponent<Enemy>();
+                Enemy enemy = collision.gameObject.GetComponent<Enemy>();
                 enemy.JumpOn();
-                
+                Destroy(gameObject);
             }
-            Destroy(gameObject);
-        }
+            
+        //}
 
     }
 
