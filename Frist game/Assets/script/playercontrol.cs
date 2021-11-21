@@ -8,7 +8,7 @@ using System;
 public class playercontrol : MonoBehaviour
 {
     public Rigidbody2D rb;
-
+    
 
     public float speed;
     public float JumpForce;
@@ -26,28 +26,59 @@ public class playercontrol : MonoBehaviour
     
     private int extraJump;//默认值是0
     public AudioSource jumpAudio,hurtAudio,cheeryAudio;//音频
+
+    [Header("Dash参数")]
+    public float dashTime;//冲锋时间
+    private float dashTimeLeft;//冲锋剩余时间
+    private float lastDash=-10f;//上次冲锋的时间
+    public float dashCoolDown;
+    public float dashSpeed;
+
+    [Header("Gun参数")]
+    public float gunTime;
+    private float gunTimeLeft;
+    private float lastGun = -10f;
+    public float gunCoolDown;
+    public float gunSpeed;
     
+
+    public bool isDash,isGun;
+    private float facedirection;
+
 
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     //void update()
     void FixedUpdate()
     {
+        //写在FixedUpdate中为了每帧检测多次
+        isGround = Physics2D.OverlapCircle(GroundCheck.position, 0.2f, ground);
         
+        Gun();
+        
+            
+
+        Dash();
+        if (isDash)
+            return;
+
         if(!isHurt)
         {
             Movement();
         }
 
+
+
         SwitchAnim();
 
-        //写在FixedUpdate中为了每帧检测多次
-        isGround = Physics2D.OverlapCircle(GroundCheck.position, 0.2f, ground);
+        
+
+
     }
 
     private void Update()
@@ -56,24 +87,43 @@ public class playercontrol : MonoBehaviour
         newJump();
         Crouch();
         CheeryNum.text = Cheery.ToString();
-
+        
+        //跳跃检测
         if (Input.GetButtonDown("Jump") && extraJump > 0)
         {  
             jumpPressed = true;
         }
+
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            //判断CD过
+            if(Time.time >= (lastDash+dashCoolDown))
+            {
+                ReadyToDash();//执行dash
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.U))
+        {
+            if (Time.time >= (lastGun + gunCoolDown))
+            {
+                ReadyToGun();//执行gun
+            }
+        }
+
 
     }
 
     void Movement()
     {
         float horizontalMove = Input.GetAxis("Horizontal");
-        float facedirection = Input.GetAxisRaw("Horizontal");
+        facedirection = Input.GetAxisRaw("Horizontal");
 
 
         //角色移动
         //if (horizontalMove != 0)
         //{
-            rb.velocity = new Vector2(horizontalMove * speed * Time.fixedDeltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(horizontalMove * speed, rb.velocity.y);
             animi.SetFloat("running", Mathf.Abs(facedirection));
         //}
 
@@ -187,6 +237,7 @@ public class playercontrol : MonoBehaviour
         }
     }
 
+    //下蹲
     void Crouch()
     {
         if (!Physics2D.OverlapCircle(CellingCheck.position,0.2f,ground)) 
@@ -203,6 +254,7 @@ public class playercontrol : MonoBehaviour
             } 
         }
     }
+    
     //角色跳跃
     /*void Jump()
     {
@@ -241,8 +293,74 @@ public class playercontrol : MonoBehaviour
         }
     }
 
+    void ReadyToDash()
+    {
+        isDash = true;
+
+        dashTimeLeft = dashTime;
+
+        lastDash = Time.time;//每dash一次记录一次
+    }
+
+    void Dash()
+    {
+        if(isDash)
+        {
+            if(dashTimeLeft>0)
+            {
+
+                if(rb.velocity.y>0 && !isGround)
+                {
+                    rb.velocity = new Vector2(dashSpeed * facedirection, JumpForce);
+                }
+                rb.velocity = new Vector2(dashSpeed * facedirection, rb.velocity.y);
+                dashTimeLeft -= Time.deltaTime;
+
+                ShadowPool.instance.GetFromPool();
+            }
+            if(dashTimeLeft<=0)
+            {
+                isDash = false;
+                if(!isGround)
+                {
+                    rb.velocity = new Vector2(dashSpeed * facedirection, JumpForce);
+                }
+
+            }
+        }
+    }
 
 
+    void ReadyToGun()
+    {
+        isGun = true;
+
+        gunTimeLeft = gunTime;
+
+        lastGun = Time.time;
+    }
+
+    void Gun()
+    {
+        if(isGun)
+        {
+            
+            if (gunTimeLeft > 0)
+            {
+
+
+                gunTimeLeft -= Time.deltaTime;
+                
+                //填充 发射子弹
+                BulletPool.instance.GetFromPool();
+            }
+            if (gunTimeLeft <= 0)
+            {
+                isGun = false;
+
+            }
+        }
+    }
 
 
 
