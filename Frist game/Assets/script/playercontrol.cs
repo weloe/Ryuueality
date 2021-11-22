@@ -40,6 +40,10 @@ public class playercontrol : MonoBehaviour
     private float lastGun = -10f;
     public float gunCoolDown;
     public float gunSpeed;
+
+    [Header("CD的UI组件")]
+    public Image DashcdImage;
+    public Image GuncdImage;
     
 
     public bool isDash,isGun;
@@ -49,7 +53,8 @@ public class playercontrol : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        DashcdImage.fillAmount = 0;
+        GuncdImage.fillAmount = 0;
     }
 
     // Update is called once per frame
@@ -94,24 +99,39 @@ public class playercontrol : MonoBehaviour
             jumpPressed = true;
         }
 
-        if(Input.GetKeyDown(KeyCode.J))
+        if(Input.GetKeyDown(KeyCode.U))
         {
             //判断CD过
             if(Time.time >= (lastDash+dashCoolDown))
             {
                 ReadyToDash();//执行dash
+
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.U))
+
+        if(Input.GetKeyDown(KeyCode.J))
         {
+            
+            //Gun();
+            
+
+            //gunTimeLeft = gunTime;
+
+            //lastGun = Time.time;
+
+            //GuncdImage.fillAmount = 1;
             if (Time.time >= (lastGun + gunCoolDown))
             {
                 ReadyToGun();//执行gun
+
             }
         }
 
 
+
+        DashcdImage.fillAmount -= 1.0f / dashCoolDown * Time.deltaTime;
+        GuncdImage.fillAmount -= 1.0f / gunCoolDown * Time.deltaTime;
     }
 
     void Movement()
@@ -146,6 +166,7 @@ public class playercontrol : MonoBehaviour
         {
             animi.SetBool("falling", true);
         }
+        
         if (animi.GetBool("jumping"))
         {
             if (rb.velocity.y < 0)
@@ -187,7 +208,7 @@ public class playercontrol : MonoBehaviour
             //CheeryNum.text = Cheery.ToString();
         }
 
-        //死亡重置
+        //死亡重置判断
         if(collision.tag == "DeadLine")
         {
 
@@ -214,7 +235,7 @@ public class playercontrol : MonoBehaviour
         if (collision.gameObject.tag == "Enemy")//
         {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-            if (animi.GetBool("falling"))//
+            if (animi.GetBool("falling") && transform.position.y> collision.gameObject.transform.position.y)//
             {
                 //Destroy(collision.gameObject);
                 enemy.JumpOn();
@@ -244,6 +265,12 @@ public class playercontrol : MonoBehaviour
         {
             if (Input.GetButton("Crouch")) //GetButtonDown
             {
+                if(animi.GetFloat("running")>0.1)
+                {
+                    animi.SetBool("crouching", true);
+                    DisColl.enabled = false;
+                }
+
                 animi.SetBool("crouching", true);
                 DisColl.enabled = false;
             }
@@ -267,6 +294,7 @@ public class playercontrol : MonoBehaviour
         }
     }*/
 
+    //二段跳
     void newJump()
     {
         if(isGround)
@@ -300,6 +328,8 @@ public class playercontrol : MonoBehaviour
         dashTimeLeft = dashTime;
 
         lastDash = Time.time;//每dash一次记录一次
+
+        DashcdImage.fillAmount = 1;
     }
 
     void Dash()
@@ -311,9 +341,9 @@ public class playercontrol : MonoBehaviour
 
                 if(rb.velocity.y>0 && !isGround)
                 {
-                    rb.velocity = new Vector2(dashSpeed * facedirection, JumpForce);
+                    rb.velocity = new Vector2(dashSpeed * transform.localScale.x, JumpForce);
                 }
-                rb.velocity = new Vector2(dashSpeed * facedirection, rb.velocity.y);
+                rb.velocity = new Vector2(dashSpeed * transform.localScale.x, rb.velocity.y);
                 dashTimeLeft -= Time.deltaTime;
 
                 ShadowPool.instance.GetFromPool();
@@ -338,6 +368,8 @@ public class playercontrol : MonoBehaviour
         gunTimeLeft = gunTime;
 
         lastGun = Time.time;
+
+        GuncdImage.fillAmount = 1;
     }
 
     void Gun()
@@ -348,11 +380,11 @@ public class playercontrol : MonoBehaviour
             if (gunTimeLeft > 0)
             {
 
-
                 gunTimeLeft -= Time.deltaTime;
                 
                 //填充 发射子弹
                 BulletPool.instance.GetFromPool();
+
             }
             if (gunTimeLeft <= 0)
             {

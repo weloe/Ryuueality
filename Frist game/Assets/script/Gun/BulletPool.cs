@@ -16,10 +16,12 @@ public class BulletPool : MonoBehaviour
 
     void Awake()
     {
+
         instance = this;
 
         
         FillPool();
+
     }
 
     //初始化对象池
@@ -48,10 +50,10 @@ public class BulletPool : MonoBehaviour
     public GameObject GetFromPool()
     {
 
-        if (availableObjects.Count == 0)
+        /*if (availableObjects.Count == 0)
         {
             FillPool();
-        }
+        }*/
         var outBullet = availableObjects.Dequeue();//从开头取出
 
         outBullet.SetActive(true);//接着会自动启用BulletSprite中的OnEnabled

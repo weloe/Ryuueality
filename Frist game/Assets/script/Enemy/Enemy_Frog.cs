@@ -41,30 +41,34 @@ public class Enemy_Frog : Enemy
 
             if (Coll.IsTouchingLayers(Ground))
             {
+                
+                rb.velocity = new Vector2(- Speed, JumpForce);
                 Animi.SetBool("jumping", true);
-                rb.velocity = new Vector2(-Speed, JumpForce);
                 
             }
             
-            if(transform.position.x<leftx)//if(transform.position.x<leftpoint.position.x)
+            /*if(transform.position.x<=leftx)//if(transform.position.x<leftpoint.position.x)
             {
+                
                 transform.localScale = new Vector3(-1,1,1);//x=-1面向右
                 Faceleft = false;
-            }
+            }*/
         }
         else
         {
             if (Coll.IsTouchingLayers(Ground))
             {
+                
+                rb.velocity = new Vector2(  Speed, JumpForce);
                 Animi.SetBool("jumping", true);
-                rb.velocity = new Vector2(Speed, JumpForce);
 
             }
-            if (transform.position.x>rightx)//if(transform.position.x>rightpoint.position.x)
+            /*if (transform.position.x>=rightx)//if(transform.position.x>rightpoint.position.x)
             {
+                
                 transform.localScale = new Vector3(1, 1, 1);//x=1面向左
                 Faceleft = true;
-            }
+            }*/
         }
 
 
@@ -81,25 +85,22 @@ public class Enemy_Frog : Enemy
 
             }
         }
-        if(Coll.IsTouchingLayers(Ground)&&Animi.GetBool("falling"))
+        if(Coll.IsTouchingLayers(Ground) && Animi.GetBool("falling"))
         {
             Animi.SetBool("falling", false);
+            if (transform.position.x <= leftx)//if(transform.position.x<leftpoint.position.x)
+            {
+
+                transform.localScale = new Vector3(-1, 1, 1);//x=-1面向右
+                Faceleft = false;
+            }
+            if (transform.position.x >= rightx)//if(transform.position.x>rightpoint.position.x)
+            {
+
+                transform.localScale = new Vector3(1, 1, 1);//x=1面向左
+                Faceleft = true;
+            }
         }
     }
-    //void Death()
-    //{
-    //    Animi.SetTrigger("death");
-    //}
-    //public void JumpOn()
-    //{
-    //    Destroy(gameObject);
-    //}
-    //void Death()
-    //{
-    //    Destroy(gameObject);
-    //}
-    //public void JumpOn()
-    //{
-    //    Animi.SetTrigger("death");
-    //}
+
 }

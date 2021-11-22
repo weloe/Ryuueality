@@ -17,7 +17,7 @@ public class DialogSystem : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        GetTextFromFile(textFile);
+        GetTextFromFile(textFile);//获得txt文件
         //index = 0;
     }
     void GetTextFromFile(TextAsset file)
@@ -39,7 +39,7 @@ public class DialogSystem : MonoBehaviour
 
     private void OnEnable()//Onenable在Start前调用,Awake后
     {
-        textLabel.text = textList[index];
+        textLabel.text = textList[index];//输入第一行
         index++;
     }
 

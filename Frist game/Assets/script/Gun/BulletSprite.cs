@@ -61,7 +61,7 @@ public class BulletSprite : MonoBehaviour
 
         thisSprite.color = color;
 
-        //运行时间大于开始时间+启动时间
+        //运行时间>开始时间+启动时间
         if (Time.time >= activeStart + activeTime)
         {
             //返回对象池
@@ -78,6 +78,8 @@ public class BulletSprite : MonoBehaviour
                 Enemy enemy = collision.gameObject.GetComponent<Enemy>();
                 enemy.JumpOn();
                 Destroy(gameObject);
+                BulletPool.instance.FillPool();
+
             }
             
         //}
