@@ -8,6 +8,7 @@ TagManager:
   - Enemies
   - Enemy
   - DeadLine
+  - Car
   layers:
   - Default
   - TransparentFX
