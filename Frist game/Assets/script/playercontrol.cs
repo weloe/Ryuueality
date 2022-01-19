@@ -52,8 +52,27 @@ public class playercontrol : MonoBehaviour
 
     public GameObject bulletPrefab1;
 
+    [Header("脚部射线检测")]
+    public float footOffset =  0.2f;
+    public float groundDistance = 0.959139f;//与地面之间的距离
+    public bool isOnGround;
+    public LayerMask groundLayer;
+    [Header("头部射线检测")]
+    public bool isHeadBlocked;
+    public float headClearance = 0.8f;
 
-    
+    RaycastHit2D Raycast(Vector2 offset, Vector2 rayDirection, float length, LayerMask layer)
+    {
+        Vector2 pos = transform.position;
+
+        RaycastHit2D hit = Physics2D.Raycast(pos + offset, rayDirection, length, layer);
+
+        Color color = hit ? Color.red : Color.green;
+        Debug.DrawRay(pos + offset, rayDirection * length, color);
+        return hit;
+    }
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -67,7 +86,32 @@ public class playercontrol : MonoBehaviour
     void FixedUpdate()
     {
         //写在FixedUpdate中为了每帧检测多次
-        isGround = Physics2D.OverlapCircle(GroundCheck.position, 0.2f, ground);
+        //isGround = Physics2D.OverlapCircle(GroundCheck.position, 0.2f, ground);
+
+        //脚部射线检测
+        RaycastHit2D leftCheck = Raycast(new Vector2(-footOffset, 0f), Vector2.down, groundDistance, groundLayer);
+        RaycastHit2D rightCheck = Raycast(new Vector2(footOffset, 0f), Vector2.down, groundDistance, groundLayer);
+        if (leftCheck || rightCheck)
+        {
+            isOnGround = true;
+        }
+        else
+        {
+            isOnGround = false;
+        }
+        //头部
+        RaycastHit2D headCheck = Raycast(new Vector2(0f,0), Vector2.up, headClearance,groundLayer);
+
+        if (headCheck)
+        {
+            isHeadBlocked = true;
+        }
+        else
+        {
+            isHeadBlocked = false;
+        }
+
+
 
 
         Gun();
@@ -164,7 +208,7 @@ public class playercontrol : MonoBehaviour
     {
         animi.SetBool("idle", false);//可去
 
-        if (rb.velocity.y < 0.1f && !coll.IsTouchingLayers(ground))
+        if (rb.velocity.y < 0.1f && !isOnGround)
         {
             animi.SetBool("falling", true);
         }
@@ -188,7 +232,7 @@ public class playercontrol : MonoBehaviour
                 isHurt = false;
             }
         }
-        else if (coll.IsTouchingLayers(ground))
+        else if (isOnGround)
         {
             animi.SetBool("falling", false);
             animi.SetBool("idle", true);
@@ -263,7 +307,7 @@ public class playercontrol : MonoBehaviour
     //下蹲
     void Crouch()
     {
-        if (!Physics2D.OverlapCircle(CellingCheck.position, 0.2f, ground))
+        if (!Physics2D.OverlapCircle(CellingCheck.position, 0.2f, ground))//!isHeadBlocked)//!Physics2D.OverlapCircle(CellingCheck.position, 0.2f, ground))
         {
             if (Input.GetButton("Crouch")) //GetButtonDown
             {
@@ -299,12 +343,12 @@ public class playercontrol : MonoBehaviour
     //二段跳
     void newJump()
     {
-        if (isGround)
+        if (isOnGround)
         {
             extraJump = 1;
 
         }
-        if (jumpPressed && isGround)
+        if (jumpPressed && isOnGround)
         {
 
             rb.velocity = Vector2.up * JumpForce;//new Vector2(0,1)
@@ -313,7 +357,7 @@ public class playercontrol : MonoBehaviour
             animi.SetBool("jumping", true);
             jumpAudio.Play();
         }
-        else if (jumpPressed && extraJump > 0 && !isGround)
+        else if (jumpPressed && extraJump > 0 && !isOnGround)
         {
             rb.velocity = Vector2.up * JumpForce;
             extraJump--;
@@ -341,7 +385,7 @@ public class playercontrol : MonoBehaviour
             if (dashTimeLeft > 0)
             {
 
-                if (rb.velocity.y > 0 && !isGround)
+                if (rb.velocity.y > 0 && !isOnGround)
                 {
                     rb.velocity = new Vector2(dashSpeed * transform.localScale.x, JumpForce);
                 }
@@ -353,7 +397,7 @@ public class playercontrol : MonoBehaviour
             if (dashTimeLeft <= 0)
             {
                 isDash = false;
-                if (!isGround)
+                if (!isOnGround)
                 {
                     rb.velocity = new Vector2(dashSpeed * facedirection, JumpForce);
                 }
