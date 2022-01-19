@@ -47,9 +47,8 @@ public class BulletSprite : MonoBehaviour
 
         activeStart = Time.time;//开始显示时间为当前时间点
 
-        rb.velocity = new Vector2(speed * Bullet_facedirection, rb.velocity.y);
+        //rb.velocity = new Vector2(speed * Bullet_facedirection, 0);
         
-
 
     }
     // Update is called once per frame
@@ -86,5 +85,5 @@ public class BulletSprite : MonoBehaviour
 
     }
 
-
+    
 }

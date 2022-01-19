@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8001216495938651489}
   - component: {fileID: 8001216495938651488}
-  - component: {fileID: 7948349949899965457}
   - component: {fileID: 3653948804195620166}
   - component: {fileID: 6799303112235021421}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: Bullet 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,24 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7948349949899965457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8001216495938651519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaf90f31b429371419aa871d3875cb15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 50
-  activeTime: 1
-  activeStart: 0
-  alphaSet: 1
-  alphaMultiplier: 0.8
-  Bullet_facedirection: 0
 --- !u!50 &3653948804195620166
 Rigidbody2D:
   serializedVersion: 4

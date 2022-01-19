@@ -8,7 +8,7 @@ using System;
 public class playercontrol : MonoBehaviour
 {
     public Rigidbody2D rb;
-    
+
 
     public float speed;
     public float JumpForce;
@@ -16,21 +16,21 @@ public class playercontrol : MonoBehaviour
     public LayerMask ground;
     public Collider2D coll;
     public Collider2D DisColl;
-    public Transform CellingCheck,GroundCheck;
+    public Transform CellingCheck, GroundCheck;
     public int Cheery = 0;
     public Text CheeryNum;
 
     private bool isHurt;//默认是false
     private bool isGround;
     private bool jumpPressed;
-    
+
     private int extraJump;//默认值是0
-    public AudioSource jumpAudio,hurtAudio,cheeryAudio;//音频
+    public AudioSource jumpAudio, hurtAudio, cheeryAudio;//音频
 
     [Header("Dash参数")]
     public float dashTime;//冲锋时间
     private float dashTimeLeft;//冲锋剩余时间
-    private float lastDash=-10f;//上次冲锋的时间
+    private float lastDash = -10f;//上次冲锋的时间
     public float dashCoolDown;
     public float dashSpeed;
 
@@ -44,11 +44,16 @@ public class playercontrol : MonoBehaviour
     [Header("CD的UI组件")]
     public Image DashcdImage;
     public Image GuncdImage;
-    
 
-    public bool isDash,isGun;
+
+    public bool isDash, isGun;
     private float facedirection;
 
+
+    public GameObject bulletPrefab1;
+
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -63,46 +68,43 @@ public class playercontrol : MonoBehaviour
     {
         //写在FixedUpdate中为了每帧检测多次
         isGround = Physics2D.OverlapCircle(GroundCheck.position, 0.2f, ground);
-        
+
+
         Gun();
-        
-            
 
         Dash();
         if (isDash)
             return;
 
-        if(!isHurt)
+        if (!isHurt)
         {
             Movement();
         }
 
-
-
         SwitchAnim();
-
-        
 
 
     }
 
     private void Update()
     {
+        //xiyin();
+
         //Jump();
         newJump();
         Crouch();
         CheeryNum.text = Cheery.ToString();
-        
+
         //跳跃检测
         if (Input.GetButtonDown("Jump") && extraJump > 0)
-        {  
+        {
             jumpPressed = true;
         }
 
-        if(Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.U))
         {
             //判断CD过
-            if(Time.time >= (lastDash+dashCoolDown))
+            if (Time.time >= (lastDash + dashCoolDown))
             {
                 ReadyToDash();//执行dash
 
@@ -110,11 +112,11 @@ public class playercontrol : MonoBehaviour
         }
 
 
-        if(Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.J))
         {
-            
+
             //Gun();
-            
+
 
             //gunTimeLeft = gunTime;
 
@@ -143,12 +145,12 @@ public class playercontrol : MonoBehaviour
         //角色移动
         //if (horizontalMove != 0)
         //{
-            rb.velocity = new Vector2(horizontalMove * speed, rb.velocity.y);
-            animi.SetFloat("running", Mathf.Abs(facedirection));
+        rb.velocity = new Vector2(horizontalMove * speed, rb.velocity.y);
+        animi.SetFloat("running", Mathf.Abs(facedirection));
         //}
 
 
-        
+
         //面向的方向
         if (facedirection != 0)
         {
@@ -162,11 +164,11 @@ public class playercontrol : MonoBehaviour
     {
         animi.SetBool("idle", false);//可去
 
-        if(rb.velocity.y<0.1f && !coll.IsTouchingLayers(ground))
+        if (rb.velocity.y < 0.1f && !coll.IsTouchingLayers(ground))
         {
             animi.SetBool("falling", true);
         }
-        
+
         if (animi.GetBool("jumping"))
         {
             if (rb.velocity.y < 0)
@@ -175,7 +177,7 @@ public class playercontrol : MonoBehaviour
                 animi.SetBool("falling", true);
             }
         }
-        else if(isHurt)
+        else if (isHurt)
         {
             animi.SetBool("hurt", true);
             animi.SetFloat("running", 0);
@@ -193,7 +195,7 @@ public class playercontrol : MonoBehaviour
 
         }
 
-        
+
     }
     //碰撞检测
     private void OnTriggerEnter2D(Collider2D collision)//若另一个配置器2D进入了触发器，则调用onTriggerEnter2D
@@ -209,7 +211,7 @@ public class playercontrol : MonoBehaviour
         }
 
         //死亡重置判断
-        if(collision.tag == "DeadLine")
+        if (collision.tag == "DeadLine")
         {
 
             GetComponent<AudioSource>().enabled = false;
@@ -235,15 +237,15 @@ public class playercontrol : MonoBehaviour
         if (collision.gameObject.tag == "Enemy")//
         {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-            if (animi.GetBool("falling") && transform.position.y> collision.gameObject.transform.position.y)//
+            if (animi.GetBool("falling") && transform.position.y > collision.gameObject.transform.position.y)//
             {
                 //Destroy(collision.gameObject);
                 enemy.JumpOn();
-                
+
                 rb.velocity = new Vector2(rb.velocity.x, JumpForce);
                 animi.SetBool("jumping", true);
             }
-            else if(transform.position.x<collision.transform.position.x)
+            else if (transform.position.x < collision.transform.position.x)
             {
                 rb.velocity = new Vector2(-10, rb.velocity.y);
                 isHurt = true;
@@ -261,11 +263,11 @@ public class playercontrol : MonoBehaviour
     //下蹲
     void Crouch()
     {
-        if (!Physics2D.OverlapCircle(CellingCheck.position,0.2f,ground)) 
+        if (!Physics2D.OverlapCircle(CellingCheck.position, 0.2f, ground))
         {
             if (Input.GetButton("Crouch")) //GetButtonDown
             {
-                if(animi.GetFloat("running")>0.1)
+                if (animi.GetFloat("running") > 0.1)
                 {
                     animi.SetBool("crouching", true);
                     DisColl.enabled = false;
@@ -278,10 +280,10 @@ public class playercontrol : MonoBehaviour
             {
                 animi.SetBool("crouching", false);
                 DisColl.enabled = true;
-            } 
+            }
         }
     }
-    
+
     //角色跳跃
     /*void Jump()
     {
@@ -297,21 +299,21 @@ public class playercontrol : MonoBehaviour
     //二段跳
     void newJump()
     {
-        if(isGround)
+        if (isGround)
         {
             extraJump = 1;
-            
+
         }
-        if(jumpPressed && isGround)
+        if (jumpPressed && isGround)
         {
-            
+
             rb.velocity = Vector2.up * JumpForce;//new Vector2(0,1)
             extraJump--;
             jumpPressed = false;
             animi.SetBool("jumping", true);
             jumpAudio.Play();
         }
-        else if(jumpPressed && extraJump>0 && !isGround)
+        else if (jumpPressed && extraJump > 0 && !isGround)
         {
             rb.velocity = Vector2.up * JumpForce;
             extraJump--;
@@ -334,12 +336,12 @@ public class playercontrol : MonoBehaviour
 
     void Dash()
     {
-        if(isDash)
+        if (isDash)
         {
-            if(dashTimeLeft>0)
+            if (dashTimeLeft > 0)
             {
 
-                if(rb.velocity.y>0 && !isGround)
+                if (rb.velocity.y > 0 && !isGround)
                 {
                     rb.velocity = new Vector2(dashSpeed * transform.localScale.x, JumpForce);
                 }
@@ -348,10 +350,10 @@ public class playercontrol : MonoBehaviour
 
                 ShadowPool.instance.GetFromPool();
             }
-            if(dashTimeLeft<=0)
+            if (dashTimeLeft <= 0)
             {
                 isDash = false;
-                if(!isGround)
+                if (!isGround)
                 {
                     rb.velocity = new Vector2(dashSpeed * facedirection, JumpForce);
                 }
@@ -374,14 +376,14 @@ public class playercontrol : MonoBehaviour
 
     void Gun()
     {
-        if(isGun)
+        if (isGun)
         {
-            
+
             if (gunTimeLeft > 0)
             {
 
                 gunTimeLeft -= Time.deltaTime;
-                
+
                 //填充 发射子弹
                 BulletPool.instance.GetFromPool();
 
@@ -394,10 +396,34 @@ public class playercontrol : MonoBehaviour
         }
     }
 
+    /*void xiyin()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector3 m_mousePosition = Input.mousePosition;
+            m_mousePosition = Camera.main.ScreenToWorldPoint(m_mousePosition);
+            // 因为是2D，用不到z轴。使将z轴的值为0，这样鼠标的坐标就在(x,y)平面上了
+            m_mousePosition.z = 0;
+            transform.right = m_mousePosition - transform.position;
+            GameObject b = Instantiate(bulletPrefab1, m_mousePosition, Quaternion.identity);
+            float m_fireAngle = Vector2.Angle(b.transform.position - this.transform.position, Vector2.up);
+
+            // 速度
+            float BulletSpeed = 4;
+
+            rb.velocity = ((b.transform.position - transform.position).normalized * BulletSpeed);
+            
+
+            if (m_mousePosition.x > this.transform.position.x)
+            {
+                m_fireAngle = -m_fireAngle;
+            }
+            transform.eulerAngles = new Vector3(0, 0, m_fireAngle);
+        }
 
 
 
 
+    }*/
 
 }
-
