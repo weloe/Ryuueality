@@ -50,6 +50,10 @@ public class gun : MonoBehaviour
             // 生成子弹
             GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 
+            //设为GunBullet的子物体
+            GameObject gunBullet = GameObject.Find("GunBullet");
+            bullet.transform.SetParent(gunBullet.transform);
+
             // 速度
             float BulletSpeed = 50;
             bullet.GetComponent<Rigidbody2D>().velocity = ((m_mousePosition - transform.position).normalized * BulletSpeed);
