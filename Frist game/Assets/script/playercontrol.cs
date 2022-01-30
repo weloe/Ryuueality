@@ -427,9 +427,10 @@ public class playercontrol : MonoBehaviour
             {
 
                 gunTimeLeft -= Time.deltaTime;
-
+                float bulletSpeed = 50;
                 //Ìî³ä ·¢Éä×Óµ¯
-                BulletPool.instance.GetFromPool();
+                GameObject bullet= BulletPool.instance.GetFromPool();
+                bullet.GetComponent<Rigidbody2D>().velocity = new Vector3(bulletSpeed, rb.velocity.y, 0);
 
             }
             if (gunTimeLeft <= 0)

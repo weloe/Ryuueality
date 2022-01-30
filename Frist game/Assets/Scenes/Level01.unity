@@ -1912,7 +1912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 8001216495938651519, guid: f0e2dfb6603cb6845b1b1800f075132c, type: 3}
-  bulletCount: 1
+  bulletCount: 5
 --- !u!4 &483849703
 Transform:
   m_ObjectHideFlags: 0

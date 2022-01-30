@@ -72,15 +72,15 @@ public class BulletSprite : MonoBehaviour
     {
         //if (collision != null)
         //{
-            if (collision.gameObject.tag == "Enemy")
+            if (collision.tag == "Enemy")
             {
                 Enemy enemy = collision.gameObject.GetComponent<Enemy>();
                 enemy.JumpOn();
                 Destroy(gameObject);
-                BulletPool.instance.FillPool();
-
+                //BulletPool.instance.FillPool();
+                
             }
-            
+
         //}
 
     }
