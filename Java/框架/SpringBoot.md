@@ -22,3 +22,16 @@ Lite(```=false)
 
 这个注解有@SpringBootConfiguration
 
+
+
+
+
+@MatrixVariable
+
+获取矩阵变量
+
+springboot默认禁用获取矩阵变量的功能，要手动开启：
+
+对于路径的处理，UrilPathHelper进行解析，
+
+removeSemicolonContent(默认移除分号后面的内容)，改成false不移除，才能获取矩阵变量
