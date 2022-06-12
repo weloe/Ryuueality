@@ -215,3 +215,5 @@ Session底层其实是基于Cookie技术实现的
 
 有了Cookie之后，每次请求都会把Session的id以Cookie的形式发给服务器，而服务器会通过Cookie的id值在服务器内存中找到创建号的Session对象，并返回。
 
+
+
