@@ -127,15 +127,15 @@ man+指令
 
 # 文件目录指令
 
-显示目录
+## 显示目录
 
 `pwd` 显示当前目录的绝对路径
 
-切换(cd)
+## 切换(cd)
 
 `cd`   切换到指定目录  `cd ~` `回到当前用户的家目录    `cd ..`回到当前目录的上一级目录
 
-创建删除文件或目录
+## 创建删除文件或目录
 
 `rm` `-r`递归删除整个文件夹  `-f` 强制删除不提示
 
@@ -145,11 +145,11 @@ man+指令
 
 `rm 文件名` 删除文件 `rm -f 文件名` 强制删除
 
-创建文件
+## 创建文件
 
 `touch 文件名称`创建空文件
 
-拷贝
+## 拷贝
 
 `cp 目标文件 指定目录`复制文件到指定目录
 
@@ -157,13 +157,13 @@ man+指令
 
 重复拷贝，强制覆盖:`\cp` `\cp -r /home/bbb/ /opt/`
 
-移动文件或目录或重命名
+## 移动文件或目录或重命名
 
 `mv 文件原名 文件新名`重命名
 
 `mv 原文件目录 新文件目录`移动
 
-查看文件内容
+## 查看文件内容
 
 `cat 文件名` 
 
@@ -171,7 +171,7 @@ man+指令
 
 管道命令：把前面得到的结果交给下一个指令进行处理` |more`
 
-more
+## more
 
 空格键，向下翻一页
 
@@ -189,7 +189,7 @@ f，输出文件名和当前行的行号
 
 `more 文件目录`查看文件内容
 
-less
+## less
 
 用于分屏查看文件内容，功能与more类型，但比more更强大，支持各种显示终端，less指令在显示文件内容时，并不是一次将整个文件加载之后才显示，而是根据显示需要加载内容，对于显示大型文件具有较高的效率。
 
@@ -201,12 +201,14 @@ less
 
 ?字串 向上查找指定字串
 
-echo指令
+## echo指令
 
 `echo $HOSTNAME`输出主机名
 `echo "hello"`  输出hello
 
-head指令
+`echo "hello" > mydate.txt`重定向指令，把hello覆盖到mydate.txt文件中
+
+## head指令
 
 用于显示文件的开头部分内容，默认情况下显示文件的前10行内容
 
@@ -219,3 +221,174 @@ tail
 `tail 文件` `tail -n 文件`	`tail -n 要看的行数 文件`
 
 实时监控，看文件是否有编号 `tail -f 文件`
+
+退出监控Ctrl+C
+
+`>`和`>>`指令
+
+输出重定向和追加
+
+覆盖内容/追加内容
+
+`ls -l > 文件`列表的内容写入到文件中(覆盖写)
+
+`ls -al >> 文件`列表的内容写入到文件中(追加到末尾)
+
+`cat 文件1 > 文件2`将文件1的内容覆盖到文件2
+
+`echo "内容" >> 文件`把内容追加到文件中
+
+## ln指令
+
+给源文件创建一个软链接
+
+`ln -s 原文件或目录 软链接名`
+
+`rm 软链接名`
+
+建立软链接后使用`pwd`仍然是软链接所在目录
+
+## history指令
+
+查看已经执行过历史命令，也可以执行历史命令
+
+`history` `history 10` `!5`
+
+# 时间日期类指令
+
+## date
+
+`date` 显示当前时间
+
+`date "+%Y- %m- %d"` 显示年月日
+
+`date "+%Y- %m- %d %H: %M: %S"`
+
+`date -s 字符串时间`设置系统当前时间
+
+## cal
+
+`cal`查看日历
+
+`cal 2020`查看2020年的日历
+
+## find
+
+`find 搜索范围 【选项】`
+
+【选项】：`-name 文件名` `-user 用户名` `-size 文件大小`
+
+案例：
+
+`find /home -name hello.text`根据名称查找/home目录下的hello.txt文件
+
+`find /opt -user nobody`根据用户nobody查找/opt目录下的文件(可加上` | more`便于查看)
+
+`find / -size +200M`查找整个Linux系统下大于200M的文件(+大于 -小于 n等于,单位：k,M,G)
+
+## locate
+
+可快速定位文件路径，查询速度快。
+
+基于数据库查询，所以第一次运行前，必须使用updatedb指令创建locate数据库
+
+```shell
+updatedb
+locate 文件名
+```
+
+## which
+
+检索查看某个指令在哪个目录下
+
+`which 指令`
+
+## grep指令和管道符号 |
+
+grep过滤查找，管道符"|"，表示将前一个命令的处理结果输出传递给后面的命令处理
+
+`grep 【选项】 查找内容 源文件`
+
+选项：`-n` 显示匹配行及行号  	 `-i`忽略字母大小写
+
+在hello.txt文件中查找"yes"所在行，并且显示行号：
+
+`cat /home/hello.txt | grep -n "yes"`
+
+`grep -n "yes" /home/hello.txt`
+
+# 压缩和解压
+
+## gzip压缩，gunzip解压
+
+`gzip 文件` `gunzip 文件.gz`
+
+## zip压缩，inzip解压
+
+zip选项`-r`递归压缩，即压缩目录
+
+unzip选项`-d<目录>`指定解压后文件的存放目录
+
+`zip -r myhome.zip /home`把home目录及其包含的文件和子文件夹都压缩成myhome.zip
+
+`mkdir /opt/temp` 创建目录 `unzip -d /opt/tmp /home/myhome.zip`把myhome.zip解压到/opt/tmp目录下
+
+## tar
+
+`tar 【选项】 XXX.tar.gz 打包的内容`
+
+既可以压缩，也可以解压
+
+```
+-c 产生.tar打包文件 
+-v 显示详细信息
+-f 指定压缩后的文件名
+-z 打包同时压缩
+-x 解包.tar文件
+```
+
+`tar -zcvf pc.tar.gz /home/pig.txt /home/cat.txt`将/home/pig.txt和/home/cat.txt 压缩成pc.tar.gz
+
+`tar -zchvf myhome.tar.gz /home/`把/home目录压缩成myhime.tar.gz
+
+`tar -zxvf pc.tar.gz`将pc.tar.gz解压到当前目录
+
+`tar -zxvf /home/myhome.tar.gz -C /opt/temp2`把myhome.tar.gz解压到/opt/temp2
+
+
+
+# centos自带openjdk问题
+
+centos安装openjdk后无法使用javac、jps等命令 由于centos安装的opendjk缺少devel组件，需要自行安装。 解决方案:
+
+先查找需要安装的openjdk的devel组件
+
+```
+# yum search openjdk
+```
+
+以安装openjdk8的devel为例
+
+```
+# yum install java-1.8.0-openjdk-devel.x86_64
+```
+
+![image-20220612121809174](linux.assets/image-20220612121809174.png)
+
+![image-20220612125832985](linux.assets/image-20220612125832985.png)
+
+# 手动部署项目
+
+```
+nohup java -jar reggie_take_out-1.0-SNAPSHOT.jar &>hello.log &
+```
+
+后台运行SpringBoot程序，并将日志输出到日志文件
+
+停止进程 `kill -9 进程`
+
+# Shell自动部署项目
+
+设置静态ip
+
+![image-20220613135041208](linux.assets/image-20220613135041208.png)
